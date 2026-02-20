@@ -5,31 +5,21 @@ local UserInputService = game:GetService("UserInputService")
 
 local remote = ReplicatedStorage:WaitForChild("ModMenuEvent")
 
--- CONFIG MOD
-local mods = {
-	["SeuNickAqui"] = true
-}
-
-if not mods[player.Name] then
-	script.Parent:Destroy()
-	return
-end
-
--- CRIAR GUI
 local gui = script.Parent
 
 -- BOTÃO LATERAL
 local toggleButton = Instance.new("TextButton")
 toggleButton.Size = UDim2.new(0,120,0,40)
 toggleButton.Position = UDim2.new(0,20,0.5,-20)
-toggleButton.Text = "MOD MENU"
+toggleButton.Text = "MENU TESTE"
 toggleButton.BackgroundColor3 = Color3.fromRGB(0,170,255)
+toggleButton.TextColor3 = Color3.new(1,1,1)
 toggleButton.Parent = gui
 
--- MENU FRAME
+-- FRAME DO MENU
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0,220,0,250)
-frame.Position = UDim2.new(0,-250,0.5,-125)
+frame.Size = UDim2.new(0,220,0,260)
+frame.Position = UDim2.new(0,-250,0.5,-130)
 frame.BackgroundColor3 = Color3.fromRGB(30,30,30)
 frame.Parent = gui
 
@@ -44,29 +34,32 @@ local function toggleMenu()
 	
 	local goal = {}
 	if open then
-		goal.Position = UDim2.new(0,20,0.5,-125)
+		goal.Position = UDim2.new(0,20,0.5,-130)
 	else
-		goal.Position = UDim2.new(0,-250,0.5,-125)
+		goal.Position = UDim2.new(0,-250,0.5,-130)
 	end
 	
-	local tween = TweenService:Create(frame, TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), goal)
+	local tween = TweenService:Create(
+		frame,
+		TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+		goal
+	)
 	tween:Play()
 end
 
 toggleButton.MouseButton1Click:Connect(toggleMenu)
 
--- 🔥 TECLA F1 PARA ABRIR
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-	if gameProcessed then return end
+-- TECLA F1
+UserInputService.InputBegan:Connect(function(input, processed)
+	if processed then return end
 	
 	if input.KeyCode == Enum.KeyCode.F1 then
 		toggleMenu()
 	end
 end)
 
--- FUNÇÃO CRIAR BOTÃO
+-- FUNÇÃO BOTÃO
 local function createButton(text, callback)
-	
 	local button = Instance.new("TextButton")
 	button.Size = UDim2.new(1,0,0,50)
 	button.Text = text .. " OFF"
@@ -91,9 +84,9 @@ local function createButton(text, callback)
 	end)
 end
 
--- ======================
+-- =================
 -- FLY LIVRE
--- ======================
+-- =================
 
 local flying = false
 local bodyVelocity
@@ -118,7 +111,6 @@ createButton("Fly", function(state)
 		bodyGyro = Instance.new("BodyGyro")
 		bodyGyro.MaxTorque = Vector3.new(400000,400000,400000)
 		bodyGyro.Parent = root
-		
 	else
 		humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
 		if bodyVelocity then bodyVelocity:Destroy() end
@@ -126,7 +118,6 @@ createButton("Fly", function(state)
 	end
 end)
 
--- CONTROLE DO FLY
 UserInputService.InputBegan:Connect(function(input)
 	if not flying then return end
 	
@@ -134,30 +125,30 @@ UserInputService.InputBegan:Connect(function(input)
 	if not root then return end
 	
 	if input.KeyCode == Enum.KeyCode.W then
-		bodyVelocity.Velocity = root.CFrame.LookVector * 50
+		bodyVelocity.Velocity = root.CFrame.LookVector * 60
 	elseif input.KeyCode == Enum.KeyCode.S then
-		bodyVelocity.Velocity = -root.CFrame.LookVector * 50
+		bodyVelocity.Velocity = -root.CFrame.LookVector * 60
 	elseif input.KeyCode == Enum.KeyCode.A then
-		bodyVelocity.Velocity = -root.CFrame.RightVector * 50
+		bodyVelocity.Velocity = -root.CFrame.RightVector * 60
 	elseif input.KeyCode == Enum.KeyCode.D then
-		bodyVelocity.Velocity = root.CFrame.RightVector * 50
+		bodyVelocity.Velocity = root.CFrame.RightVector * 60
 	elseif input.KeyCode == Enum.KeyCode.Space then
-		bodyVelocity.Velocity = Vector3.new(0,50,0)
+		bodyVelocity.Velocity = Vector3.new(0,60,0)
 	elseif input.KeyCode == Enum.KeyCode.LeftControl then
-		bodyVelocity.Velocity = Vector3.new(0,-50,0)
+		bodyVelocity.Velocity = Vector3.new(0,-60,0)
 	end
 end)
 
--- ======================
+-- =================
 -- HITBOX
--- ======================
+-- =================
 createButton("Hitbox", function(state)
 	remote:FireServer("Hitbox", state)
 end)
 
--- ======================
+-- =================
 -- NAMES
--- ======================
+-- =================
 createButton("Names", function(state)
 	remote:FireServer("Names", state)
 end)
